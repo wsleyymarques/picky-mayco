@@ -1,0 +1,6 @@
+interface:
+  display_name: "Picky Mayco Frontend"
+  short_description: "Check frontend implementation details"
+  default_prompt: "Use $picky-mayco-frontend to review this frontend task."
+policy:
+  allow_implicit_invocation: true

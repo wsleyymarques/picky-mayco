@@ -1,0 +1,18 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "picky-mayco",
+  "version": "0.1.0",
+  "description": "A strict full-stack implementation workflow with frontend, backend, image, QA, documentation, and durable-learning specialists.",
+  "author": {
+    "name": "Picky Mayco contributors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "full-stack",
+    "frontend",
+    "backend",
+    "validation",
+    "cypress",
+    "quality-assurance"
+  ]
+}

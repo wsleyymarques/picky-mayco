@@ -1,0 +1,6 @@
+interface:
+  display_name: "Consume"
+  short_description: "Recall and ingest implementation lessons"
+  default_prompt: "Use $consume to recall or ingest durable lessons from this implementation."
+policy:
+  allow_implicit_invocation: true

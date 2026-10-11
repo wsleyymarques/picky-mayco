@@ -1,0 +1,6 @@
+interface:
+  display_name: "Picky Mayco Images"
+  short_description: "Check image upload and delivery flows"
+  default_prompt: "Use $picky-mayco-images to review this image workflow."
+policy:
+  allow_implicit_invocation: true

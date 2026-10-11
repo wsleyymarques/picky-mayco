@@ -1,0 +1,6 @@
+interface:
+  display_name: "Picky Mayco Docs"
+  short_description: "Sync Cypress docs and repository index"
+  default_prompt: "Use $picky-mayco-docs to update project documentation and the root index.md."
+policy:
+  allow_implicit_invocation: true
