@@ -36,7 +36,7 @@ Or use its helper with the repository owner and name:
 
 ```bash
 python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
-  --repo OWNER/REPOSITORY \
+  --repo wsleyymarques/picky-mayco \
   --path \
     skills/picky-mayco \
     skills/picky-mayco-frontend \

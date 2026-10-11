@@ -6,6 +6,8 @@
   "author": {
     "name": "Picky Mayco contributors"
   },
+  "homepage": "https://github.com/wsleyymarques/picky-mayco",
+  "repository": "https://github.com/wsleyymarques/picky-mayco",
   "license": "MIT",
   "keywords": [
     "full-stack",
