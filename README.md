@@ -1,97 +1,129 @@
 # Picky Mayco
 
-Picky Mayco is an opinionated Agent Skills suite for planning, implementing, verifying, and documenting full-stack changes. It keeps frontend and backend analysis explicit, treats supplied designs as evidence, adds Cypress-ready interaction points, and records durable lessons without turning task history into prompt baggage.
+O Picky Mayco é uma suíte de *Agent Skills* para conduzir mudanças full-stack com mais consistência. Ela transforma um pedido de implementação em um fluxo explícito de análise, estratégia, execução, testes e documentação, para que detalhes de interface, API, validação, segurança e qualidade não sejam esquecidos.
 
-## Included skills
+O repositório é a fonte única das skills. Ele segue o formato aberto de Agent Skills: cada skill é uma pasta com um `SKILL.md` e, quando necessário, referências e metadados. Por isso pode ser usado no Codex, no Claude Code e em outros agentes que reconheçam esse formato.
 
-| Skill | Responsibility |
+## Quando usar
+
+Use Picky Mayco ao implementar, revisar ou planejar uma mudança que possa afetar frontend, backend, contratos de API, imagens, testes ou documentação. É especialmente útil para formulários, fluxos de usuário, endpoints, regras de domínio, uploads e mudanças que precisam ser fáceis de verificar.
+
+Ele não substitui as convenções do projeto: primeiro inspeciona o repositório e suas instruções e, depois, aplica o fluxo da skill dentro desses limites.
+
+## O fluxo de trabalho
+
+1. Lê o pedido, as instruções do repositório, o código relacionado, os testes e referências visuais fornecidas.
+2. Separa o impacto em **Frontend**, **Backend** e **Contrato compartilhado**, registrando também o que não muda.
+3. Carrega apenas as especialidades necessárias e produz uma estratégia com riscos, casos de borda e verificação.
+4. Aguarda aprovação da estratégia antes de alterar código, exceto quando a implementação imediata foi solicitada.
+5. Durante e ao fim da implementação, verifica testes, automação Cypress, documentação, mapa do repositório e aprendizados reutilizáveis.
+
+O resultado esperado é uma entrega que explica claramente o que mudou em cada camada, quais verificações foram executadas e quais riscos permanecem, se houver.
+
+## Skills incluídas
+
+| Skill | Responsabilidade |
 | --- | --- |
-| `picky-mayco` | Explicitly invoked router for task analysis and implementation. |
-| `picky-mayco-frontend` | Field validation, visual references, responsive behavior, accessibility, and client state. |
-| `picky-mayco-backend` | Request validation, domain invariants, authorization, persistence, and API contracts. |
-| `picky-mayco-images` | Image selection, upload, transformation, storage, delivery, and display. |
-| `picky-mayco-qa` | Test matrix, Cypress readiness, and the final verification gate. |
-| `picky-mayco-docs` | Markdown reconciliation, Cypress selector catalog, and repository `index.md`. |
-| `consume` | Persistent recall and ingestion of evidence-backed implementation lessons. |
+| `picky-mayco` | Coordena a análise, escolhe as especialidades aplicáveis, monta a estratégia e padroniza a entrega final. |
+| `picky-mayco-frontend` | Cobre UI, formulários, validação, responsividade, acessibilidade, estados de tela e referências visuais. |
+| `picky-mayco-backend` | Cobre validação de entrada, regras de domínio, autorização, persistência, falhas e contratos de API. |
+| `picky-mayco-images` | Cobre o ciclo completo de imagens: seleção, upload, validação, transformação, armazenamento, entrega e exclusão. |
+| `picky-mayco-qa` | Define a matriz de testes, a preparação para Cypress e a validação final baseada em evidências. |
+| `picky-mayco-docs` | Mantém Markdown, catálogo de seletores Cypress e o `index.md` de navegação do repositório coerentes com o código. |
+| `consume` | Lê e registra aprendizados duráveis, baseados em evidências, sem guardar segredos ou histórico inútil de tarefas. |
 
-The repository is also a portable skills-only plugin. `plugin.json` is the package manifest and every skill lives under `skills/<name>/SKILL.md`.
+## Instalação
 
-## Install in Codex
+Pré-requisitos para os comandos abaixo: Git e Python 3. O repositório é público em [wsleyymarques/picky-mayco](https://github.com/wsleyymarques/picky-mayco).
 
-Clone the repository, then run:
+### Codex
+
+Clone o repositório e execute o instalador:
 
 ```bash
+git clone https://github.com/wsleyymarques/picky-mayco.git
+cd picky-mayco
 python3 scripts/install.py
 ```
 
-The installer validates the package and copies every skill into `${CODEX_HOME}/skills` when `CODEX_HOME` is set, otherwise `~/.codex/skills`. It refuses to overwrite an existing skill.
-
-To install directly from a public GitHub repository with Codex's built-in installer, ask Codex:
+Por padrão, ele instala todas as skills em `~/.codex/skills`; se `CODEX_HOME` estiver configurado, usa `<CODEX_HOME>/skills`. Inicie uma nova interação do Codex após a instalação e peça explicitamente, por exemplo:
 
 ```text
-$skill-installer install every skill under the skills directory from this GitHub repository.
+$picky-mayco analise e implemente esta tarefa: ...
 ```
 
-Or use its helper with the repository owner and name:
+Para instalar somente uma skill, repita `--skill`:
 
 ```bash
-python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
-  --repo wsleyymarques/picky-mayco \
-  --path \
-    skills/picky-mayco \
-    skills/picky-mayco-frontend \
-    skills/picky-mayco-backend \
-    skills/picky-mayco-images \
-    skills/picky-mayco-qa \
-    skills/picky-mayco-docs \
-    skills/consume
+python3 scripts/install.py --skill picky-mayco --skill picky-mayco-qa
 ```
 
-Installed skills become available on the next agent turn. Other Agent Skills-compatible hosts can load the individual directories under `skills/` or install the repository as a plugin when they support the Agent Plugins manifest.
+O projeto também contém `plugin.json`, portanto é um plugin portátil. Hosts que oferecem instalação de plugins podem instalar o repositório como plugin; veja a [documentação de plugins do Codex](https://developers.openai.com/plugins/build/plugins) para a interface disponível na sua versão.
 
-## Use
+### Claude Code
 
-Start a task explicitly with:
+Claude Code descobre skills no sistema de arquivos. Instale o mesmo pacote no diretório global de skills:
 
-```text
-$picky-mayco analyze and implement this task: ...
+```bash
+git clone https://github.com/wsleyymarques/picky-mayco.git
+cd picky-mayco
+python3 scripts/install.py --dest ~/.claude/skills
 ```
 
-Attach task screenshots or Figma exports when available. The frontend specialist separates observed design requirements from inferred responsive behavior and unknown states before strategy.
+Para compartilhar as skills com quem trabalha em um único projeto, use o diretório do projeto e versione-o junto com o código:
 
-The router asks only behavior-changing questions, produces separate frontend and backend strategy sections, waits for approval unless immediate implementation was requested, and finishes with QA, documentation, and learning gates.
+```bash
+python3 scripts/install.py --dest .claude/skills
+```
 
-## Optional tools
+Abra uma nova sessão do Claude Code depois da instalação. Ele pode selecionar uma skill automaticamente quando a descrição da tarefa corresponder; quando quiser garantir o fluxo completo, peça para usar `picky-mayco` na tarefa. O layout `.claude/skills/<nome>/SKILL.md` é o local recomendado pelo [Claude Code](https://support.claude.com/en/articles/14554000-claude-code-power-user-tips).
 
-- `caveman`: used when available for concise chat updates; normal concise communication is the fallback.
-- `rtk`: preferred when available for compact command output; native commands are the fallback.
+### Outros agentes compatíveis com Agent Skills
 
-Neither optional tool is required to install or run the suite.
+Muitos agentes usam o mesmo formato: uma pasta por skill contendo `SKILL.md`, com suas referências e scripts. Para eles:
 
-## Durable lessons
+1. Descubra na documentação do agente qual é o diretório de skills ou a opção de importação de uma skill.
+2. Execute o instalador apontando para esse diretório:
 
-`consume` stores lessons outside the installed package so plugin upgrades do not erase them. Storage priority:
+   ```bash
+   python3 scripts/install.py --dest /caminho/para/o/diretorio-de-skills
+   ```
 
-1. `PICKY_MAYCO_HOME`, when configured.
-2. `$XDG_DATA_HOME/picky-mayco` on Unix-like systems.
-3. `~/.local/share/picky-mayco` on Unix-like systems.
-4. `%LOCALAPPDATA%\picky-mayco` on Windows.
+3. Reinicie a sessão do agente e solicite a skill pelo nome, caso o host não faça seleção automática.
 
-The skill asks for a writable location when none is available. Lesson files exclude credentials, personal data, raw logs, and machine-specific repository paths.
+Também é possível importar manualmente as pastas de `skills/`. Mantenha cada pasta intacta — não copie apenas o `SKILL.md`, pois algumas skills possuem arquivos em `references/` e `agents/`.
 
-## Validate
+Para integrações por API, faça o upload ou anexe os diretórios de skill de acordo com o provedor. A [documentação de Skills da OpenAI](https://developers.openai.com/api/docs/guides/tools-skills) e a [documentação de Agent Skills da Anthropic](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) descrevem as opções de API e seus limites.
+
+## Atualizações e distribuição
+
+Não edite uma cópia instalada em `~/.codex/skills` ou `~/.claude/skills`: ela é apenas uma cópia de execução. Faça as mudanças neste repositório, valide-as, publique-as no GitHub e então atualize a instalação de cada ambiente.
+
+```bash
+git checkout -b minha-alteracao
+# edite as skills, referências, scripts ou documentação necessários
+python3 scripts/validate.py
+python3 -m unittest discover -s tests -v
+git add .
+git commit -m "descrição da alteração"
+git push -u origin minha-alteracao
+```
+
+Depois que a alteração for integrada à `main`, cada consumidor atualiza seu clone com `git pull --ff-only` e reinstala as skills no diretório do seu agente. O instalador se recusa intencionalmente a sobrescrever uma instalação existente; isso evita apagar alterações locais sem aviso. Remova ou substitua conscientemente as pastas antigas antes de executar a reinstalação.
+
+Para uma equipe, mantenha um clone ou submódulo apontando para uma versão revisada do repositório. Assim todos usam a mesma revisão e uma atualização passa por revisão e testes antes de chegar aos agentes.
+
+## Desenvolvimento e validação
+
+Antes de abrir uma alteração, execute:
 
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s tests -v
 ```
 
-Validation uses only the Python standard library.
+Consulte [CONTRIBUTING.md](CONTRIBUTING.md) para o fluxo de contribuição e [SECURITY.md](SECURITY.md) para relatar questões de segurança.
 
-## Contributing
+## Licença
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Security-sensitive findings belong in a private report as described in [SECURITY.md](SECURITY.md).
-
-## License
-
-MIT. See [LICENSE](LICENSE).
+[MIT](LICENSE).
